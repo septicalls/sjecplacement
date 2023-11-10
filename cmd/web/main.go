@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -28,4 +29,8 @@ func main() {
 		errorLog: log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile),
 		infoLog:  log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime),
 	}
+
+	app.infoLog.Printf("Starting server on %s", cfg.addr)
+	err := http.ListenAndServe(*&cfg.addr, app.routes())
+	log.Fatal(err)
 }
