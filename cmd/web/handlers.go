@@ -23,3 +23,7 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "You're looking at the drive %d.", id)
 }
+
+func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "You're looking at the drive creation page")
+}

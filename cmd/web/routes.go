@@ -15,6 +15,7 @@ func (app *application) routes() http.Handler {
 
 	router.HandlerFunc(http.MethodGet, "/", app.home)
 	router.HandlerFunc(http.MethodGet, "/drive/:id", app.driveView)
+	router.HandlerFunc(http.MethodGet, "/create", app.driveCreate)
 
 	return router
 }
