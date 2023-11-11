@@ -1,8 +1,22 @@
 {{define "title"}}Upcoming Drives{{end}}
 
 {{define "main"}}
-<h2>
-    Upcoming Drives
-</h2>
+<h2>Upcoming Drives</h2>
+{{if .Drives}}
+{{range .Drives}}
+<article>
+    <div class="heading">
+        <h1>{{.Title}}</h1>
+        <h2>{{.Company}}</h2>
+    </div>
+    <div class="drive-body">
+        <p>{{.Description}}</p>
+        <time>{{.Date}}</time>
+    </div>
+    <hr>
+</article>
+{{end}}
+{{else}}
 <p>Nothing to see yet.</p>
+{{end}}
 {{end}}

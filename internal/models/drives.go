@@ -47,3 +47,34 @@ func (m *DriveModel) Get(id int) (*Drive, error) {
 
 	return d, nil
 }
+
+func (m *DriveModel) Latest() ([]*Drive, error) {
+	stmt := `SELECT id, title, company, description, date FROM "drives"
+	ORDER BY date DESC LIMIT 10`
+
+	rows, err := m.DB.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	drives := []*Drive{}
+
+	for rows.Next() {
+		d := &Drive{}
+
+		err = rows.Scan(&d.ID, &d.Title, &d.Company, &d.Description, &d.Date)
+		if err != nil {
+			return nil, err
+		}
+
+		drives = append(drives, d)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return drives, nil
+}

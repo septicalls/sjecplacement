@@ -8,7 +8,8 @@ import (
 )
 
 type templateData struct {
-	Drive *models.Drive
+	Drive  *models.Drive
+	Drives []*models.Drive
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {

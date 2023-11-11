@@ -12,7 +12,17 @@ import (
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-	app.render(w, http.StatusOK, "home.html", nil)
+	drives, err := app.drives.Latest()
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	data := &templateData{
+		Drives: drives,
+	}
+
+	app.render(w, http.StatusOK, "home.html", data)
 }
 
 func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
