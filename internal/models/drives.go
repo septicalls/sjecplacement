@@ -14,11 +14,11 @@ type Drive struct {
 	Date        time.Time
 }
 
-type Model struct {
+type DriveModel struct {
 	DB *sql.DB
 }
 
-func (m *Model) Insert(title string, company string, description string, date time.Time) (int, error) {
+func (m *DriveModel) Insert(title string, company string, description string, date time.Time) (int, error) {
 	stmt := `INSERT INTO "drives" (title, company, description, date) VALUES
 	($1, $2, $3, $4) RETURNING id`
 
@@ -31,7 +31,7 @@ func (m *Model) Insert(title string, company string, description string, date ti
 	return int(id), nil
 }
 
-func (m *Model) Get(id int) (*Drive, error) {
+func (m *DriveModel) Get(id int) (*Drive, error) {
 	stmt := `SELECT id, title, company, description, date FROM "drives"
 	WHERE id = $1`
 

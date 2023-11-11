@@ -24,7 +24,7 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	drive, err := app.models.Get(id)
+	drive, err := app.drives.Get(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(w)
@@ -47,7 +47,7 @@ func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) 
 	description := `LOREM IPSUM DOLOR AMET`
 	date := time.Now().Truncate(24 * time.Hour)
 
-	id, err := app.models.Insert(title, company, description, date)
+	id, err := app.drives.Insert(title, company, description, date)
 	if err != nil {
 		app.serverError(w, err)
 		return

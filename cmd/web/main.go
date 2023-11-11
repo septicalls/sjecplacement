@@ -23,7 +23,7 @@ type config struct {
 type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
-	models        *models.Model
+	drives        *models.DriveModel
 	templateCache map[string]*template.Template
 }
 
@@ -63,7 +63,7 @@ func main() {
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
-		models:        &models.Model{DB: db},
+		drives:        &models.DriveModel{DB: db},
 		templateCache: templateCache,
 	}
 
