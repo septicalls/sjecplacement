@@ -9,6 +9,8 @@ import (
 	"os"
 	"text/template"
 
+	"sjecplacement.in/internal/models"
+
 	_ "github.com/lib/pq"
 )
 
@@ -21,6 +23,7 @@ type config struct {
 type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
+	models        *models.Model
 	templateCache map[string]*template.Template
 }
 
@@ -60,6 +63,7 @@ func main() {
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
+		models:        &models.Model{DB: db},
 		templateCache: templateCache,
 	}
 
