@@ -41,7 +41,13 @@ func main() {
 		templateCache: templateCache,
 	}
 
+	srv := http.Server{
+		Addr:     cfg.addr,
+		ErrorLog: errorLog,
+		Handler:  app.routes(),
+	}
+
 	app.infoLog.Printf("Starting server on %s", cfg.addr)
-	err = http.ListenAndServe(*&cfg.addr, app.routes())
+	err = srv.ListenAndServe()
 	log.Fatal(err)
 }
