@@ -1,11 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
+	"sjecplacement.in/internal/models"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -21,9 +24,34 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "You're looking at the drive %d.", id)
+	drive, err := app.models.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	fmt.Fprintf(w, "%+v", drive)
 }
 
 func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "You're looking at the drive creation page")
+}
+
+func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) {
+	title := "The sceptix club recruitement"
+	company := "The sceptix club"
+	description := `LOREM IPSUM DOLOR AMET`
+	date := time.Now().Truncate(24 * time.Hour)
+
+	id, err := app.models.Insert(title, company, description, date)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/drive/%d", id), http.StatusSeeOther)
 }
