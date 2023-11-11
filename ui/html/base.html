@@ -1,0 +1,25 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{block "title" .}}SJEC Placement{{end}}</title>
+</head>
+
+<body>
+    <header>
+        <h1><a href="/">SJEC Placement</a></h1>
+    </header>
+    {{template "nav" .}}
+    <main>
+        {{template "main" .}}
+    </main>
+    <footer>
+        <a href="https://github.com/septicalls/sjecplacement" target="_blank">View Source.</a>
+    </footer>
+</body>
+
+</html>
+{{end}}
