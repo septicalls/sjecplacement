@@ -1,0 +1,14 @@
+{{define "title"}}{{.Title}}{{end}}
+
+{{define "main"}}
+<article>
+    <div class="heading">
+        <h1>{{.Title}}</h1>
+        <h2>{{.Company}}</h2>
+    </div>
+    <div class="drive-body">
+        <p>{{.Description}}</p>
+        <time>{{.Date}}</time>
+    </div>
+</article>
+{{end}}
