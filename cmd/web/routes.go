@@ -13,12 +13,13 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
 	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		app.notFount(w)
+		app.notFound(w)
 	})
 
 	router.HandlerFunc(http.MethodGet, "/", app.home)
 	router.HandlerFunc(http.MethodGet, "/drive/:id", app.driveView)
 	router.HandlerFunc(http.MethodGet, "/create", app.driveCreate)
+	router.HandlerFunc(http.MethodPost, "/create", app.driveCreatePost)
 
 	return router
 }

@@ -3,7 +3,14 @@ package main
 import (
 	"path/filepath"
 	"text/template"
+
+	"sjecplacement.in/internal/models"
 )
+
+type templateData struct {
+	Drive  *models.Drive
+	Drives []*models.Drive
+}
 
 func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}

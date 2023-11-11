@@ -19,3 +19,7 @@
 
 # Go workspace file
 go.work
+
+# septicalls
+.env
+run.sh
