@@ -22,3 +22,4 @@ go.work
 
 # septicalls
 .env
+run.sh
