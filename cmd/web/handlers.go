@@ -17,7 +17,7 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil || id < 1 {
-		app.notFount(w)
+		app.notFound(w)
 		return
 	}
 
