@@ -6,11 +6,10 @@
 {{range .Drives}}
 <article>
     <div class="heading">
-        <h1>{{.Title}}</h1>
+        <a href="/drive/{{.ID}}">
+            <h1>{{.Title}}</h1>
+        </a>
         <h2>{{.Company}}</h2>
-    </div>
-    <div class="drive-body">
-        <p>{{.Description}}</p>
         <time>{{.Date}}</time>
     </div>
     <hr>
