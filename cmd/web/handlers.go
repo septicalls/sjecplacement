@@ -9,7 +9,7 @@ import (
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "You're looking at the home page.")
+	app.render(w, http.StatusOK, "home.html")
 }
 
 func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
