@@ -1,7 +1,8 @@
-{{define "title"}}{{.Title}}{{end}}
+{{define "title"}}{{.Drive.Title}}{{end}}
 
 {{define "main"}}
 <article>
+    {{with .Drive}}
     <div class="heading">
         <h1>{{.Title}}</h1>
         <h2>{{.Company}}</h2>
@@ -10,5 +11,6 @@
         <p>{{.Description}}</p>
         <time>{{.Date}}</time>
     </div>
+    {{end}}
 </article>
 {{end}}

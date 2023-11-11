@@ -34,7 +34,11 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, http.StatusOK, "drive.html", drive)
+	data := &templateData{
+		Drive: drive,
+	}
+
+	app.render(w, http.StatusOK, "drive.html", data)
 }
 
 func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
