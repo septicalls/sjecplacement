@@ -12,7 +12,7 @@ import (
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-	app.render(w, http.StatusOK, "home.html")
+	app.render(w, http.StatusOK, "home.html", nil)
 }
 
 func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +34,7 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%+v", drive)
+	app.render(w, http.StatusOK, "drive.html", drive)
 }
 
 func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
