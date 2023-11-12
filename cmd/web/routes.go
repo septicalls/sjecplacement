@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/justinas/alice"
 )
 
 func (app *application) routes() http.Handler {
@@ -21,5 +22,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/create", app.driveCreate)
 	router.HandlerFunc(http.MethodPost, "/create", app.driveCreatePost)
 
-	return app.recoverPanic(app.logRequest(secureHeaders(router)))
+	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
+
+	return standard.Then(router)
 }
