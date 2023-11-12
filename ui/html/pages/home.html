@@ -7,7 +7,7 @@
 {{if .Drives}}
 {{range .Drives}}
 <a href="/drive/{{.ID}}">
-    <article>
+    <article{{if (.Date | isDone)}} class="expired" {{end}}>
         <div class="heading">
             <h1>{{.Title}}</h1>
         </div>
@@ -19,7 +19,7 @@
                 <time>{{.Date | humanDate}}</time>
             </div>
         </div>
-    </article>
+        </article>
 </a>
 {{end}}
 {{else}}
