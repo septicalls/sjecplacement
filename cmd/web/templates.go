@@ -18,8 +18,13 @@ func humanDate(t time.Time) string {
 	return t.Format("Monday, January 02, 2006")
 }
 
+func isDone(t time.Time) bool {
+	return !t.After(time.Now())
+}
+
 var functions = template.FuncMap{
 	"humanDate": humanDate,
+	"isDone":    isDone,
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {
