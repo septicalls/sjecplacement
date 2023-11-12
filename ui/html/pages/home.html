@@ -14,10 +14,11 @@
             <h3>{{.Company}}</h3>
             <div class="info">
                 <p>Number of Roles: 7</p>
-                <time>{{.Date}}</time>
+                <time>{{.Date | humanDate}}</time>
             </div>
         </div>
     </article>
+</a>
 {{end}}
 {{else}}
 <p>Nothing to see yet.</p>
