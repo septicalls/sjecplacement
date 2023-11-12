@@ -1,7 +1,9 @@
-{{define "title"}}Upcoming Drives{{end}}
+{{define "head"}}
+<link rel="stylesheet" href="/static/css/home.css" type="text/css">
+<title>Upcoming Drives</title>
+{{end}}
 
 {{define "main"}}
-<link rel="stylesheet" href="/static/css/home.css" type="text/css">
 {{if .Drives}}
 {{range .Drives}}
 <a href="/drive/{{.ID}}">
