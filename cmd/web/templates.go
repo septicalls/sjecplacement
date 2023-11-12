@@ -3,6 +3,7 @@ package main
 import (
 	"path/filepath"
 	"text/template"
+	"time"
 
 	"sjecplacement.in/internal/models"
 )
@@ -10,6 +11,14 @@ import (
 type templateData struct {
 	Drive  *models.Drive
 	Drives []*models.Drive
+}
+
+func humanDate(t time.Time) string {
+	return t.Format("Monday, January 02, 2006")
+}
+
+var functions = template.FuncMap{
+	"humanDate": humanDate,
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {
@@ -23,7 +32,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	for _, page := range pages {
 		name := filepath.Base(page)
 
-		ts, err := template.ParseFiles("./ui/html/base.html")
+		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.html")
 		if err != nil {
 			return nil, err
 		}
