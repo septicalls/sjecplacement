@@ -3,6 +3,12 @@ article {
     margin: 2em 0;
     border: 4px solid #3A5A40;
     background-color: #e9f5db;
+    transition: transform 100ms;
+    transform-origin: center center;
+}
+
+article:hover {
+    transform: scale(1.015);
 }
 
 .heading {
@@ -21,6 +27,7 @@ article h1, h3 {
 
 article hr {
     margin: 0;
+    height: 0;
     border: 2px solid #3A5A40;
 }
 
