@@ -11,6 +11,13 @@ import (
 	"sjecplacement.in/internal/models"
 )
 
+type driveCreateForm struct {
+	Title       string `form:"title"`
+	Company     string `form:"company"`
+	Description string `form:"description"`
+	Date        string `form:"date"`
+}
+
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	drives, err := app.drives.Latest()
 	if err != nil {
@@ -56,12 +63,21 @@ func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) {
-	title := "GDSC Web Dev Project Screening"
-	company := "Google Developer Student Club - SJEC"
-	description := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vitae proin sagittis nisl rhoncus. In mollis nunc sed id semper. Enim diam vulputate ut pharetra. Diam vel quam elementum pulvinar etiam non quam lacus suspendisse. Neque gravida in fermentum et sollicitudin ac orci phasellus egestas. Netus et malesuada fames ac turpis egestas sed tempus urna. Curabitur gravida arcu ac tortor. In hendrerit gravida rutrum quisque non tellus orci. Elementum sagittis vitae et leo duis ut. Nisl purus in mollis nunc sed id semper risus in. Feugiat scelerisque varius morbi enim nunc faucibus. Mattis vulputate enim nulla aliquet. Tincidunt arcu non sodales neque. Proin sagittis nisl rhoncus mattis rhoncus.`
-	date := time.Now().Truncate(24*time.Hour).AddDate(0, 0, 365)
+	var form driveCreateForm
 
-	id, err := app.drives.Insert(title, company, description, date)
+	err := app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	date, err := time.Parse("2006-01-02", form.Date)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	id, err := app.drives.Insert(form.Title, form.Company, form.Description, date)
 	if err != nil {
 		app.serverError(w, err)
 		return
