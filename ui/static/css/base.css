@@ -1,0 +1,101 @@
+@font-face {
+    font-family: 'Gandhi Sans';
+    src: url('/static/fonts/GandhiSans-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Gandhi Sans';
+    src: url('/static/fonts/GandhiSans-Bold.otf');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Gandhi Sans';
+    src: url('/static/fonts/GandhiSans-Italic.otf');
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Gandhi Sans';
+    src: url('/static/fonts/GandhiSans-BoldItalic.otf');
+    font-style: italic;
+    font-weight: bold;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Gandhi Sans', sans-serif;
+    background-color: #eaf4f4;
+    color: #233d4d;
+    height: 100%;
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+header {
+    background-color: #6b9080;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.1em 2em;
+}
+
+header a {
+    text-decoration: none;
+    color: #f6fff8;
+}
+
+header ul {
+    list-style-type: none;
+}
+
+header ul li {
+    display: inline;
+}
+
+header ul li a {
+    padding: 0.5em 0.8em;
+    margin-left: 0.3em;
+    border-radius: 1em;
+}
+
+header ul li a:hover {
+    background-color: #52796f;
+    transition-duration: 200ms;
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container main {
+    max-width: 1000px;
+}
+
+footer {
+    margin-top: auto;
+    background-color: #6b9080;
+    color: #f6fff8;
+    text-align: center;
+    padding: 1em 0;
+}
+
+footer a {
+    color: #eaf4f4;
+}

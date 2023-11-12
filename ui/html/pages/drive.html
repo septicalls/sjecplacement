@@ -1,16 +1,18 @@
 {{define "title"}}{{.Drive.Title}}{{end}}
 
 {{define "main"}}
-<main>
-    {{with .Drive}}
+<link rel="stylesheet" href="/static/css/drive.css" type="text/css">
+{{with .Drive}}
+<article>
     <div class="heading">
         <h1>{{.Title}}</h1>
-        <h2>{{.Company}}</h2>
-    </div>
-    <div class="drive-body">
-        <p>{{.Description}}</p>
         <time>{{.Date}}</time>
     </div>
+    <hr>
+    <div class="body">
+        <h3>{{.Company}}</h3>
+        <p>{{.Description}}</p>
+    </div>
     {{end}}
-</main>
+</article>
 {{end}}
