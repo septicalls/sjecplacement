@@ -1,7 +1,9 @@
-{{define "title"}}{{.Drive.Title}}{{end}}
+{{define "head"}}
+<link rel="stylesheet" href="/static/css/drive.css" type="text/css">
+<title>{{.Drive.Title}}</title>
+{{end}}
 
 {{define "main"}}
-<link rel="stylesheet" href="/static/css/drive.css" type="text/css">
 {{with .Drive}}
 <article>
     <div class="heading">
