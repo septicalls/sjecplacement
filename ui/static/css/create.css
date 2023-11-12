@@ -16,6 +16,11 @@ form label {
     font-size: large;
 }
 
+form label:not(.error)::before {
+    content: '\2022';
+    margin-right: 0.2em;
+}
+
 form input[type="text"], textarea {
     width: 100%;
     padding: 0.75em;
@@ -56,4 +61,15 @@ form input[type="date"]::-webkit-calendar-picker-indicator {
 
 textarea {
     height: 166px;
+}
+
+.error {
+    color: #C0392B;
+    font-weight: bold;
+    display: block;
+}
+
+.error + textarea, .error + input {
+    border-color: #C0392B !important;
+    border-width: 2px !important;
 }
