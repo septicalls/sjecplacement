@@ -7,10 +7,6 @@ article {
     transform-origin: center center;
 }
 
-article:hover {
-    transform: scale(1.015);
-}
-
 .heading {
     padding: 0.2em 1em;
     background-color: #cfe1b9;
