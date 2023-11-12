@@ -9,13 +9,15 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"sjecplacement.in/internal/models"
+	"sjecplacement.in/internal/validator"
 )
 
 type driveCreateForm struct {
-	Title       string `form:"title"`
-	Company     string `form:"company"`
-	Description string `form:"description"`
-	Date        string `form:"date"`
+	Title               string `form:"title"`
+	Company             string `form:"company"`
+	Description         string `form:"description"`
+	Date                string `form:"date"`
+	validator.Validator `form:"-"`
 }
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +61,13 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
-	app.render(w, http.StatusOK, "create.html", nil)
+	data := templateData{}
+
+	data.Form = driveCreateForm{
+		Date: time.Now().Format("2006-01-02"),
+	}
+
+	app.render(w, http.StatusOK, "create.html", data)
 }
 
 func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) {
@@ -71,9 +79,20 @@ func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	date, err := time.Parse("2006-01-02", form.Date)
-	if err != nil {
-		app.clientError(w, http.StatusBadRequest)
+	form.CheckField(validator.NotBlank(form.Title), "title", "Title is mandatory")
+	form.CheckField(validator.NotBlank(form.Company), "company", "Company name is mandatory")
+	form.CheckField(validator.NotBlank(form.Description), "description", "Description is mandatory")
+	form.CheckField(validator.MaxChar(form.Title, 100), "title", "Title can only be 100 characters long")
+	form.CheckField(validator.MaxChar(form.Company, 100), "company", "Company can only be 100 characters long")
+
+	date, dateOk := validator.ValidDate(form.Date)
+	form.CheckField(dateOk, "date", "Must be a valid date beyond today")
+
+	if !form.Valid() {
+		data := templateData{
+			Form: form,
+		}
+		app.render(w, http.StatusUnprocessableEntity, "create.html", data)
 		return
 	}
 

@@ -2,6 +2,7 @@ package validator
 
 import (
 	"strings"
+	"time"
 	"unicode/utf8"
 )
 
@@ -37,7 +38,11 @@ func MaxChar(value string, n int) bool {
 	return utf8.RuneCountInString(value) <= n
 }
 
-func ValidDate(date string) bool {
-	// here
-	return true
+func ValidDate(date string) (time.Time, bool) {
+	parsedDate, err := time.Parse("2006-01-02", date)
+	if err != nil || !parsedDate.After(time.Now()) {
+		return time.Time{}, false
+	}
+
+	return parsedDate, true
 }
