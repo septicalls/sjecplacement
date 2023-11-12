@@ -11,6 +11,7 @@ import (
 
 	"sjecplacement.in/internal/models"
 
+	"github.com/go-playground/form/v4"
 	_ "github.com/lib/pq"
 )
 
@@ -25,6 +26,7 @@ type application struct {
 	infoLog       *log.Logger
 	drives        *models.DriveModel
 	templateCache map[string]*template.Template
+	formDecoder   *form.Decoder
 }
 
 func main() {
@@ -60,11 +62,14 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	formDecoder := form.NewDecoder()
+
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
 		drives:        &models.DriveModel{DB: db},
 		templateCache: templateCache,
+		formDecoder:   formDecoder,
 	}
 
 	srv := http.Server{

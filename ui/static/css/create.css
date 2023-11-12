@@ -1,0 +1,75 @@
+form {
+    width: 1000px;
+    margin: 2em 0;
+}
+
+form div {
+    margin: 2em 0;
+}
+
+form div:last-child {
+    border-top: 2px dashed #E4E5E7;
+}
+
+form label {
+    display: inline;
+    font-size: large;
+}
+
+form label:not(.error)::before {
+    content: '\2022';
+    margin-right: 0.2em;
+}
+
+form input[type="text"], textarea {
+    width: 100%;
+    padding: 0.75em;
+    margin-top: 0.5em;
+    color: #6A6C6F;
+    background: #FFFFFF;
+    border: 1px solid #E4E5E7;
+    border-radius: 3px;
+}
+
+form input[type="submit"] {
+    padding: 1em 2em;
+    margin-top: 1em;
+    border: 0;
+    border-radius: 3px;
+    background-color: #4EB722;
+    color: #FFFFFF;
+    font-size: large;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+form input[type="date"] {
+    padding: 0.75em;
+    color: #6A6C6F;
+    background: #FFFFFF;
+    border: 1px solid #E4E5E7;
+    border-radius: 3px;
+}
+
+form input[type="date"]::-webkit-calendar-picker-indicator {
+    padding: 0.75em;
+    color: #6A6C6F;
+    background: #FFFFFF;
+    border: 1px solid #E4E5E7;
+    border-radius: 3px;
+}
+
+textarea {
+    height: 166px;
+}
+
+.error {
+    color: #C0392B;
+    font-weight: bold;
+    display: block;
+}
+
+.error + textarea, .error + input {
+    border-color: #C0392B !important;
+    border-width: 2px !important;
+}

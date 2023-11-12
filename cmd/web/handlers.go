@@ -9,7 +9,16 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"sjecplacement.in/internal/models"
+	"sjecplacement.in/internal/validator"
 )
+
+type driveCreateForm struct {
+	Title               string `form:"title"`
+	Company             string `form:"company"`
+	Description         string `form:"description"`
+	Date                string `form:"date"`
+	validator.Validator `form:"-"`
+}
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	drives, err := app.drives.Latest()
@@ -52,16 +61,42 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "You're looking at the drive creation page")
+	data := templateData{}
+
+	data.Form = driveCreateForm{
+		Date: time.Now().Format("2006-01-02"),
+	}
+
+	app.render(w, http.StatusOK, "create.html", data)
 }
 
 func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) {
-	title := "GDSC Web Dev Project Screening"
-	company := "Google Developer Student Club - SJEC"
-	description := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vitae proin sagittis nisl rhoncus. In mollis nunc sed id semper. Enim diam vulputate ut pharetra. Diam vel quam elementum pulvinar etiam non quam lacus suspendisse. Neque gravida in fermentum et sollicitudin ac orci phasellus egestas. Netus et malesuada fames ac turpis egestas sed tempus urna. Curabitur gravida arcu ac tortor. In hendrerit gravida rutrum quisque non tellus orci. Elementum sagittis vitae et leo duis ut. Nisl purus in mollis nunc sed id semper risus in. Feugiat scelerisque varius morbi enim nunc faucibus. Mattis vulputate enim nulla aliquet. Tincidunt arcu non sodales neque. Proin sagittis nisl rhoncus mattis rhoncus.`
-	date := time.Now().Truncate(24*time.Hour).AddDate(0, 0, 365)
+	var form driveCreateForm
 
-	id, err := app.drives.Insert(title, company, description, date)
+	err := app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	form.CheckField(validator.NotBlank(form.Title), "title", "Title is mandatory")
+	form.CheckField(validator.NotBlank(form.Company), "company", "Company name is mandatory")
+	form.CheckField(validator.NotBlank(form.Description), "description", "Description is mandatory")
+	form.CheckField(validator.MaxChar(form.Title, 100), "title", "Title can only be 100 characters long")
+	form.CheckField(validator.MaxChar(form.Company, 100), "company", "Company can only be 100 characters long")
+
+	date, dateOk := validator.ValidDate(form.Date)
+	form.CheckField(dateOk, "date", "Must be a valid date beyond today")
+
+	if !form.Valid() {
+		data := templateData{
+			Form: form,
+		}
+		app.render(w, http.StatusUnprocessableEntity, "create.html", data)
+		return
+	}
+
+	id, err := app.drives.Insert(form.Title, form.Company, form.Description, date)
 	if err != nil {
 		app.serverError(w, err)
 		return

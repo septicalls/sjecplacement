@@ -1,0 +1,38 @@
+{{define "title"}}Draft A Placement Drive{{end}}
+
+{{define "main"}}
+<link rel="stylesheet" href="/static/css/create.css" type="text/css">
+<form action="/create" method="post">
+    <div>
+        <label for="title">Title:</label>
+        {{with .Form.FieldErrors.title}}
+        <label class='error'>{{.}}</label>
+        {{end}}
+        <input type="text" name="title" value="{{.Form.Title}}">
+    </div>
+    <div>
+        <label for="company">Company:</label>
+        {{with .Form.FieldErrors.company}}
+        <label class='error'>{{.}}</label>
+        {{end}}
+        <input type="text" name="company" value="{{.Form.Company}}">
+    </div>
+    <div>
+        <label for="description">Description:</label>
+        {{with .Form.FieldErrors.description}}
+        <label class='error'>{{.}}</label>
+        {{end}}
+        <textarea name="description">{{.Form.Description}}</textarea>
+    </div>
+    <div>
+        <label for="date">Date:</label>
+        {{with .Form.FieldErrors.date}}
+        <label class='error'>{{.}}</label>
+        {{end}}
+        <input type="date" name="date" value="{{.Form.Date}}">
+    </div>
+    <div>
+        <input type="submit" value="Draft Drive">
+    </div>
+</form>
+{{end}}
