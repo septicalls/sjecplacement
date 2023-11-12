@@ -1,0 +1,25 @@
+{{define "title"}}Draft A Placement Drive{{end}}
+
+{{define "main"}}
+<form action="/create" method="post">
+    <div>
+        <label for="title">Title:</label>
+        <input type="text" name="title" required>
+    </div>
+    <div>
+        <label for="company">Company:</label>
+        <input type="text" name="company" required>
+    </div>
+    <div>
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+    </div>
+    <div>
+        <label for="date">Date:</label>
+        <input type="date" name="date" required>
+    </div>
+    <div>
+        <input type="submit" value="Draft Drive">
+    </div>
+</form>
+{{end}}
