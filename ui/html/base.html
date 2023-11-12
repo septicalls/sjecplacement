@@ -5,20 +5,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{block "title" .}}SJEC Placement{{end}}</title>
+    <link rel="stylesheet" href="/static/css/base.css" type="text/css">
+    <title>{{block "title" .}}SJEC Placement Repository{{end}}</title>
 </head>
 
 <body>
     <header>
-        <h1><a href="/">SJEC Placement</a></h1>
+        <h2><a href="/">SJEC Placement Repository</a></h2>
+        {{template "nav" .}}
     </header>
-    {{template "nav" .}}
     <main>
         {{template "main" .}}
     </main>
-    <footer>
-        <a href="https://github.com/septicalls/sjecplacement" target="_blank">View Source.</a>
-    </footer>
+    {{template "footer" .}}
 </body>
 
 </html>
