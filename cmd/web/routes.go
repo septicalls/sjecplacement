@@ -21,5 +21,5 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/create", app.driveCreate)
 	router.HandlerFunc(http.MethodPost, "/create", app.driveCreatePost)
 
-	return secureHeaders(router)
+	return app.logRequest(secureHeaders(router))
 }
