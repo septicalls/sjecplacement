@@ -52,7 +52,7 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "You're looking at the drive creation page")
+	app.render(w, http.StatusOK, "create.html", nil)
 }
 
 func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) {
