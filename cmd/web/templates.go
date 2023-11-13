@@ -11,6 +11,7 @@ import (
 type templateData struct {
 	Drive  *models.Drive
 	Drives []*models.Drive
+	Roles  []*models.Role
 	Form   any
 }
 

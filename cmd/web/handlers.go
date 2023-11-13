@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -53,8 +54,36 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	roles := []*models.Role{
+		{
+			ID:               1,
+			Profile:          "Software Engineer",
+			Description:      "Develop and maintain software applications",
+			Qualification:    "Bachelor's degree in Computer Science",
+			Cutoff:           sql.NullString{String: "", Valid: false},
+			Location:         sql.NullString{String: "Mangalore", Valid: true},
+			Stipend:          sql.NullInt32{Int32: 32000, Valid: true},
+			CTC:              sql.NullFloat64{Float64: 0.0, Valid: false},
+			ServiceAgreement: sql.NullFloat64{Float64: 0.0, Valid: false},
+			DriveID:          1,
+		},
+		{
+			ID:               2,
+			Profile:          "Data Scientist",
+			Description:      "Analyzing and interpreting complex data sets",
+			Qualification:    "Master's degree in Data Science",
+			Cutoff:           sql.NullString{String: "65 %", Valid: true},
+			Location:         sql.NullString{String: "", Valid: false},
+			Stipend:          sql.NullInt32{Int32: 0, Valid: false},
+			CTC:              sql.NullFloat64{Float64: 4.5, Valid: true},
+			ServiceAgreement: sql.NullFloat64{Float64: 1.5, Valid: true},
+			DriveID:          1,
+		},
+	}
+
 	data := &templateData{
 		Drive: drive,
+		Roles: roles,
 	}
 
 	app.render(w, http.StatusOK, "drive.html", data)

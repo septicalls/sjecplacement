@@ -14,7 +14,56 @@
     <div class="body">
         <h3>{{.Company}}</h3>
         <p>{{.Description}}</p>
+        <p>Roles {{.Roles}}</p>
     </div>
-    {{end}}
 </article>
+{{end}}
+
+{{if .Roles}}
+{{range .Roles}}
+<table>
+    <tr>
+        <td>
+            <h2><span>#{{.ID}}</span> {{.Profile}}</h2>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Qualification: {{.Qualification}}</p>
+            <textarea>{{.Description}}</textarea>
+        </td>
+    </tr>
+    {{if .Cutoff.Valid}}
+    <tr>
+        <td>Cut-off</td>
+        <td>{{.Cutoff.String}}</td>
+    </tr>
+    {{end}}
+    {{if .Location.Valid}}
+    <tr>
+        <td>Location</td>
+        <td>{{.Location.String}}</td>
+    </tr>
+    {{end}}
+    {{if .Stipend.Valid}}
+    <tr>
+        <td>Stipend</td>
+        <td>Rs. {{.Stipend.Int32}} per month</td>
+    </tr>
+    {{end}}
+    {{if .CTC.Valid}}
+    <tr>
+        <td>Cost-To-Cost Benefit</td>
+        <td>{{.CTC.Float64}} LPA</td>
+    </tr>
+    {{end}}
+    {{if .ServiceAgreement.Valid}}
+    <tr>
+        <td>Service Agreement</td>
+        <td>{{.ServiceAgreement.Float64}} years</td>
+    </tr>
+    {{end}}
+</table>
+{{end}}
+{{end}}
 {{end}}
