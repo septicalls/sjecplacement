@@ -53,6 +53,7 @@ func (m *DriveModel) Get(id int) (*Drive, error) {
 func (m *DriveModel) Latest() ([]*Drive, error) {
 	stmt := `SELECT d.id, d.title, d.company, d.description, d.date, COUNT(r.id)
 	FROM drives d LEFT JOIN roles r ON r.drive_id = d.id
+	WHERE d.published = true
 	GROUP BY d.id, d.title, d.company, d.description, d.date
 	ORDER BY d.date DESC LIMIT 10`
 
