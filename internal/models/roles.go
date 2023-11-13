@@ -36,8 +36,7 @@ func (m *RoleModel) Insert(r *Role) (int, error) {
 }
 
 func (m *RoleModel) All(id int) ([]*Role, error) {
-	stmt := `SELECT id, profile, description, qualification, cutoff, location, stiped, ctc,
-	serviceagreement FROM roles WHERE id = $1 ORDER BY id ASC`
+	stmt := `SELECT * FROM roles WHERE drive_id = $1 ORDER BY id ASC`
 
 	rows, err := m.DB.Query(stmt, id)
 	if err != nil {
@@ -61,12 +60,11 @@ func (m *RoleModel) All(id int) ([]*Role, error) {
 			&r.Stipend,
 			&r.CTC,
 			&r.ServiceAgreement,
+			&r.DriveID,
 		)
 		if err != nil {
 			return nil, err
 		}
-
-		r.DriveID = id
 
 		roles = append(roles, r)
 	}

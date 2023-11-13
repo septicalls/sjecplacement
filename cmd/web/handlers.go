@@ -66,8 +66,15 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	roles, err := app.roles.All(id)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
 	data := &templateData{
 		Drive: drive,
+		Roles: roles,
 	}
 
 	data.Form = roleCreateForm{
@@ -166,9 +173,16 @@ func (app *application) driveViewPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		roles, err := app.roles.All(id)
+		if err != nil {
+			app.serverError(w, err)
+			return
+		}
+
 		data := &templateData{
 			Form:  form,
 			Drive: drive,
+			Roles: roles,
 		}
 
 		app.render(w, http.StatusUnprocessableEntity, "drive.html", data)
