@@ -16,12 +16,7 @@ form label {
     font-size: large;
 }
 
-form label:not(.error)::before {
-    content: '\2022';
-    margin-right: 0.2em;
-}
-
-form input[type="text"], textarea {
+form input[type="text"], form input[type="number"], textarea {
     width: 100%;
     padding: 0.75em;
     margin-top: 0.5em;
@@ -29,6 +24,10 @@ form input[type="text"], textarea {
     background: #FFFFFF;
     border: 1px solid #E4E5E7;
     border-radius: 3px;
+}
+
+textarea {
+    resize: vertical;
 }
 
 form input[type="submit"] {
@@ -57,10 +56,6 @@ form input[type="date"]::-webkit-calendar-picker-indicator {
     background: #FFFFFF;
     border: 1px solid #E4E5E7;
     border-radius: 3px;
-}
-
-textarea {
-    height: 166px;
 }
 
 .error {
