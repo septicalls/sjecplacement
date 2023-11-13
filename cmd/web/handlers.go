@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -18,6 +17,19 @@ type driveCreateForm struct {
 	Company             string `form:"company"`
 	Description         string `form:"description"`
 	Date                string `form:"date"`
+	validator.Validator `form:"-"`
+}
+
+type roleCreateForm struct {
+	Profile             string `form:"profile"`
+	Description         string `form:"description"`
+	Qualification       string `form:"qualification"`
+	Cutoff              string `form:"cutoff"`
+	Location            string `form:"location"`
+	Stipend             string `form:"stipend"`
+	CTC                 string `form:"ctc"`
+	ServiceAgreement    string `form:"serviceagreement"`
+	DriveID             int    `form:"-"`
 	validator.Validator `form:"-"`
 }
 
@@ -54,36 +66,8 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	roles := []*models.Role{
-		{
-			ID:               1,
-			Profile:          "Software Engineer",
-			Description:      "Develop and maintain software applications",
-			Qualification:    "Bachelor's degree in Computer Science",
-			Cutoff:           sql.NullString{String: "", Valid: false},
-			Location:         sql.NullString{String: "Mangalore", Valid: true},
-			Stipend:          sql.NullInt32{Int32: 32000, Valid: true},
-			CTC:              sql.NullFloat64{Float64: 0.0, Valid: false},
-			ServiceAgreement: sql.NullFloat64{Float64: 0.0, Valid: false},
-			DriveID:          1,
-		},
-		{
-			ID:               2,
-			Profile:          "Data Scientist",
-			Description:      "Analyzing and interpreting complex data sets",
-			Qualification:    "Master's degree in Data Science",
-			Cutoff:           sql.NullString{String: "65 %", Valid: true},
-			Location:         sql.NullString{String: "", Valid: false},
-			Stipend:          sql.NullInt32{Int32: 0, Valid: false},
-			CTC:              sql.NullFloat64{Float64: 4.5, Valid: true},
-			ServiceAgreement: sql.NullFloat64{Float64: 1.5, Valid: true},
-			DriveID:          1,
-		},
-	}
-
 	data := &templateData{
 		Drive: drive,
-		Roles: roles,
 	}
 
 	app.render(w, http.StatusOK, "drive.html", data)
@@ -126,6 +110,63 @@ func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) 
 	}
 
 	id, err := app.drives.Insert(form.Title, form.Company, form.Description, date)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/drive/%d", id), http.StatusSeeOther)
+}
+
+func (app *application) driveViewPost(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil || id < 1 {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	form := roleCreateForm{DriveID: id}
+
+	err = app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	form.CheckField(validator.NotBlank(form.Profile), "profile", "This field is mandatory")
+	form.CheckField(validator.NotBlank(form.Description), "description", "This field is mandatory")
+	form.CheckField(validator.NotBlank(form.Qualification), "qualification", "This field is mandatory")
+
+	cutoff, cutoffOk := validator.ValidString(form.Cutoff, 100)
+	form.CheckField(cutoffOk, "cutoff", "Cut-off can only be 100 characters long")
+
+	location, locationOk := validator.ValidString(form.Location, 100)
+	form.CheckField(locationOk, "location", "Location can only be 100 characters long")
+
+	stipend, stipendOk := validator.ValidInt(form.Stipend)
+	form.CheckField(stipendOk, "stipend", "Must be a valid integer")
+
+	ctc, ctcOk := validator.ValidFloat(form.CTC)
+	form.CheckField(ctcOk, "ctc", "Must be a valid floating point")
+
+	srvAgr, srvAgrOk := validator.ValidFloat(form.ServiceAgreement)
+	form.CheckField(srvAgrOk, "serviceagreement", "Must be a valid floating point")
+
+	role := models.Role{
+		Profile:          form.Profile,
+		Description:      form.Description,
+		Qualification:    form.Qualification,
+		Cutoff:           cutoff,
+		Location:         location,
+		Stipend:          stipend,
+		CTC:              ctc,
+		ServiceAgreement: srvAgr,
+		DriveID:          id,
+	}
+
+	_, err = app.roles.Insert(&role)
 	if err != nil {
 		app.serverError(w, err)
 		return
