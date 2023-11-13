@@ -12,6 +12,7 @@ type Drive struct {
 	Company     string
 	Description string
 	Date        time.Time
+	Published   bool
 }
 
 type DriveModel struct {
@@ -32,12 +33,12 @@ func (m *DriveModel) Insert(title string, company string, description string, da
 }
 
 func (m *DriveModel) Get(id int) (*Drive, error) {
-	stmt := `SELECT id, title, company, description, date FROM "drives"
+	stmt := `SELECT id, title, company, description, date, published FROM "drives"
 	WHERE id = $1`
 
 	d := &Drive{}
 
-	err := m.DB.QueryRow(stmt, id).Scan(&d.ID, &d.Title, &d.Company, &d.Description, &d.Date)
+	err := m.DB.QueryRow(stmt, id).Scan(&d.ID, &d.Title, &d.Company, &d.Description, &d.Date, &d.Published)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
@@ -50,7 +51,7 @@ func (m *DriveModel) Get(id int) (*Drive, error) {
 
 func (m *DriveModel) Latest() ([]*Drive, error) {
 	stmt := `SELECT id, title, company, description, date FROM "drives"
-	ORDER BY date DESC LIMIT 10`
+	WHERE published=true ORDER BY date DESC LIMIT 10`
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
