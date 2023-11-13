@@ -23,15 +23,18 @@
 {{range .Roles}}
 <table>
     <tr>
-        <td>
+        <td colspan="2">
             <h2><span>#{{.ID}}</span> {{.Profile}}</h2>
         </td>
     </tr>
     <tr>
-        <td>
-            <p>Qualification: {{.Qualification}}</p>
-            <textarea>{{.Description}}</textarea>
+        <td colspan="2">
+            <textarea readonly>{{.Description}}</textarea>
         </td>
+    </tr>
+    <tr>
+        <td>Qualification</td>
+        <td>{{.Qualification}}</td>
     </tr>
     {{if .Cutoff.Valid}}
     <tr>
@@ -47,7 +50,7 @@
     {{end}}
     {{if .Stipend.Valid}}
     <tr>
-        <td>Stipend</td>
+        <td>Internship Stipend</td>
         <td>Rs. {{.Stipend.Int32}} per month</td>
     </tr>
     {{end}}
