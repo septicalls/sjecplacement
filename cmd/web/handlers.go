@@ -108,8 +108,8 @@ func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	form.CheckField(validator.NotBlank(form.Title), "title", "Title is mandatory")
-	form.CheckField(validator.NotBlank(form.Company), "company", "Company name is mandatory")
+	form.CheckField(validator.NotBlank(form.Title), "title", "This field is mandatory")
+	form.CheckField(validator.NotBlank(form.Company), "company", "This field is mandatory")
 	form.CheckField(validator.NotBlank(form.Description), "description", "Description is mandatory")
 	form.CheckField(validator.MaxChar(form.Title, 100), "title", "Title can only be 100 characters long")
 	form.CheckField(validator.MaxChar(form.Company, 100), "company", "Company can only be 100 characters long")

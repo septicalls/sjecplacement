@@ -16,6 +16,17 @@ form label {
     font-size: large;
 }
 
+.error {
+    color: #C0392B;
+    font-weight: bold;
+    display: block;
+}
+
+.error + input, .error + textarea {
+    border-color: #C0392B !important;
+    border-width: 2px !important;
+}
+
 form input[type="text"], form input[type="number"], textarea {
     width: 100%;
     padding: 0.75em;
@@ -56,15 +67,4 @@ form input[type="date"]::-webkit-calendar-picker-indicator {
     background: #FFFFFF;
     border: 1px solid #E4E5E7;
     border-radius: 3px;
-}
-
-.error {
-    color: #C0392B;
-    font-weight: bold;
-    display: block;
-}
-
-.error + textarea, .error + input {
-    border-color: #C0392B !important;
-    border-width: 2px !important;
 }
