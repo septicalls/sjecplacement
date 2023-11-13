@@ -25,6 +25,7 @@ type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
 	drives        *models.DriveModel
+	roles         *models.RoleModel
 	templateCache map[string]*template.Template
 	formDecoder   *form.Decoder
 }
@@ -68,6 +69,7 @@ func main() {
 		errorLog:      errorLog,
 		infoLog:       infoLog,
 		drives:        &models.DriveModel{DB: db},
+		roles:         &models.RoleModel{DB: db},
 		templateCache: templateCache,
 		formDecoder:   formDecoder,
 	}

@@ -1,6 +1,8 @@
 package validator
 
 import (
+	"database/sql"
+	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -45,4 +47,42 @@ func ValidDate(date string) (time.Time, bool) {
 	}
 
 	return parsedDate, true
+}
+
+func ValidInt(integer string) (sql.NullInt32, bool) {
+	if strings.TrimSpace(integer) == "" {
+		return sql.NullInt32{Valid: false}, true
+	}
+
+	parsedInt, err := strconv.Atoi(integer)
+	if err != nil || parsedInt < 0 {
+		return sql.NullInt32{}, false
+	}
+
+	return sql.NullInt32{Int32: int32(parsedInt), Valid: true}, true
+}
+
+func ValidFloat(float string) (sql.NullFloat64, bool) {
+	if strings.TrimSpace(float) == "" {
+		return sql.NullFloat64{Valid: false}, true
+	}
+
+	parsedFloat, err := strconv.ParseFloat(float, 64)
+	if err != nil || parsedFloat < 0.0 {
+		return sql.NullFloat64{}, false
+	}
+
+	return sql.NullFloat64{Float64: parsedFloat, Valid: true}, true
+}
+
+func ValidString(str string, n int) (sql.NullString, bool) {
+	if !MaxChar(str, n) {
+		return sql.NullString{}, false
+	}
+
+	if !NotBlank(str) {
+		return sql.NullString{Valid: false}, true
+	}
+
+	return sql.NullString{String: str, Valid: true}, true
 }

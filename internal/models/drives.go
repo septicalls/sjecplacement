@@ -12,6 +12,8 @@ type Drive struct {
 	Company     string
 	Description string
 	Date        time.Time
+	Published   bool
+	Roles       int
 }
 
 type DriveModel struct {
@@ -32,12 +34,12 @@ func (m *DriveModel) Insert(title string, company string, description string, da
 }
 
 func (m *DriveModel) Get(id int) (*Drive, error) {
-	stmt := `SELECT id, title, company, description, date FROM "drives"
-	WHERE id = $1`
+	stmt := `SELECT d.id, d.title, d.company, d.description, d.date, d.published,
+	(SELECT COUNT(r.id) FROM roles r WHERE r.drive_id = d.id) FROM drives d WHERE d.id = $1`
 
 	d := &Drive{}
 
-	err := m.DB.QueryRow(stmt, id).Scan(&d.ID, &d.Title, &d.Company, &d.Description, &d.Date)
+	err := m.DB.QueryRow(stmt, id).Scan(&d.ID, &d.Title, &d.Company, &d.Description, &d.Date, &d.Published, &d.Roles)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
@@ -49,8 +51,11 @@ func (m *DriveModel) Get(id int) (*Drive, error) {
 }
 
 func (m *DriveModel) Latest() ([]*Drive, error) {
-	stmt := `SELECT id, title, company, description, date FROM "drives"
-	ORDER BY date DESC LIMIT 10`
+	stmt := `SELECT d.id, d.title, d.company, d.description, d.date, COUNT(r.id)
+	FROM drives d LEFT JOIN roles r ON r.drive_id = d.id
+	WHERE d.published = true
+	GROUP BY d.id, d.title, d.company, d.description, d.date
+	ORDER BY d.date DESC LIMIT 10`
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
@@ -64,7 +69,7 @@ func (m *DriveModel) Latest() ([]*Drive, error) {
 	for rows.Next() {
 		d := &Drive{}
 
-		err = rows.Scan(&d.ID, &d.Title, &d.Company, &d.Description, &d.Date)
+		err = rows.Scan(&d.ID, &d.Title, &d.Company, &d.Description, &d.Date, &d.Roles)
 		if err != nil {
 			return nil, err
 		}
