@@ -70,19 +70,19 @@
 </table>
 {{end}}
 {{end}}
-<h2>Add Role</h2>
+<p>Fields with an '*' are required.</p>
 <form action="/drive/{{.Drive.ID}}" method="post">
     <div>
-        <label for="profile">Profile:</label>
+        <label class="required" for="profile">Profile:</label>
         <input type="text" name="profile">
         <p>Data Scientist, Business Analyst, etc.</p>
     </div>
     <div>
-        <label for="description">Description:</label>
+        <label class="required" for="description">Description:</label>
         <textarea name="description" rows="8"></textarea>
     </div>
     <div>
-        <label for="qualification">Qualification:</label>
+        <label class="required" for="qualification">Qualification:</label>
         <input type="text" name="qualification">
         <p>"BE in CSE/ECE only", "Mechanical Engineer", etc.</p>
     </div>
@@ -110,6 +110,9 @@
         <label for="serviceagreement">Service Agreement:</label>
         <input type="number" name="serviceagreement" placeholder="In Years">
         <p>1.5, 2, 0.5, etc.</p>
+    </div>
+    <div>
+        <input type="submit" value="Add Role">
     </div>
 </form>
 

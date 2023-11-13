@@ -3,7 +3,7 @@ form {
     margin: 2em 0;
 }
 
-form div {
+form div:not(.error) {
     margin: 2em 0;
 }
 
@@ -17,12 +17,9 @@ form label {
 }
 
 .error {
+    display: block;
     color: #C0392B;
     font-weight: bold;
-    display: block;
-}
-
-.error + input, .error + textarea {
     border-color: #C0392B !important;
     border-width: 2px !important;
 }
@@ -30,7 +27,7 @@ form label {
 form input[type="text"], form input[type="number"], textarea {
     width: 100%;
     padding: 0.75em;
-    margin-top: 0.5em;
+    margin: 0.5em 0;
     color: #6A6C6F;
     background: #FFFFFF;
     border: 1px solid #E4E5E7;
@@ -55,6 +52,7 @@ form input[type="submit"] {
 
 form input[type="date"] {
     padding: 0.75em;
+    margin: 0.5em 0;
     color: #6A6C6F;
     background: #FFFFFF;
     border: 1px solid #E4E5E7;
@@ -63,8 +61,15 @@ form input[type="date"] {
 
 form input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 0.75em;
+    margin: 0.5em 0;
     color: #6A6C6F;
     background: #FFFFFF;
     border: 1px solid #E4E5E7;
     border-radius: 3px;
+}
+
+.required::before {
+    content: "*";
+    margin-right: 0.2em;
+    color: #C0392B;
 }

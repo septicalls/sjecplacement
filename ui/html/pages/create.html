@@ -6,32 +6,26 @@
 {{define "main"}}
 <form action="/create" method="post">
     <div>
-        <label for="title">Title:</label>
-        {{with .Form.FieldErrors.title}}
-        <label class='error'>{{.}}</label>
-        {{end}}
-        <input type="text" name="title" value="{{.Form.Title}}">
+        <label class="required" for="title">Title:</label>
+        <input type="text" name="title" value="{{.Form.Title}}" {{with .Form.FieldErrors.title}} class="error" {{end}}>
+        {{with .Form.FieldErrors.title}} <label class='error'>{{.}}</label> {{end}}
     </div>
     <div>
-        <label for="company">Company:</label>
-        {{with .Form.FieldErrors.company}}
-        <label class='error'>{{.}}</label>
-        {{end}}
-        <input type="text" name="company" value="{{.Form.Company}}">
+        <label class=" required" for="company">Company:</label>
+        <input type="text" name="company" value="{{.Form.Company}}" {{with .Form.FieldErrors.company}}class="error"
+            {{end}}>
+        {{with .Form.FieldErrors.company}} <label class='error'>{{.}}</label> {{end}}
     </div>
     <div>
-        <label for="description">Description:</label>
-        {{with .Form.FieldErrors.description}}
-        <label class='error'>{{.}}</label>
-        {{end}}
-        <textarea name="description" rows="8">{{.Form.Description}}</textarea>
+        <label class="required" for="description">Description:</label>
+        <textarea name="description" rows="8" {{with .Form.FieldErrors.description}} class="error"
+            {{end}}>{{.Form.Description}}</textarea>
+        {{with .Form.FieldErrors.description}} <label class='error'>{{.}}</label> {{end}}
     </div>
     <div>
-        <label for="date">Date:</label>
-        {{with .Form.FieldErrors.date}}
-        <label class='error'>{{.}}</label>
-        {{end}}
-        <input type="date" name="date" value="{{.Form.Date}}">
+        <label class="required" for="date">Date:</label>
+        <input type="date" name="date" value="{{.Form.Date}}" {{with .Form.FieldErrors.date}} class="error" {{end}}>
+        {{with .Form.FieldErrors.date}} <label class='error'>{{.}}</label> {{end}}
     </div>
     <div>
         <input type="submit" value="Draft Drive">
