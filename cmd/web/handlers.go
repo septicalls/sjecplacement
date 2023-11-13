@@ -70,6 +70,10 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		Drive: drive,
 	}
 
+	data.Form = roleCreateForm{
+		DriveID: id,
+	}
+
 	app.render(w, http.StatusOK, "drive.html", data)
 }
 
@@ -153,6 +157,23 @@ func (app *application) driveViewPost(w http.ResponseWriter, r *http.Request) {
 
 	srvAgr, srvAgrOk := validator.ValidFloat(form.ServiceAgreement)
 	form.CheckField(srvAgrOk, "serviceagreement", "Must be a valid floating point")
+
+	if !form.Valid() {
+		// Will be replaced with drive cache
+		drive, err := app.drives.Get(id)
+		if err != nil {
+			app.serverError(w, err)
+			return
+		}
+
+		data := &templateData{
+			Form:  form,
+			Drive: drive,
+		}
+
+		app.render(w, http.StatusUnprocessableEntity, "drive.html", data)
+		return
+	}
 
 	role := models.Role{
 		Profile:          form.Profile,
