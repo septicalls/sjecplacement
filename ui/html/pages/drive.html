@@ -5,6 +5,9 @@
 {{end}}
 
 {{define "main"}}
+{{with .Flash}}
+<div class='flash'>{{.}}</div>
+{{end}}
 {{with .Drive}}
 <article>
     <div class="heading">

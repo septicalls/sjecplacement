@@ -72,13 +72,13 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	flash := app.sessionManager.PopString(r.Context(), "flash")
+
 	data := &templateData{
 		Drive: drive,
 		Roles: roles,
-	}
-
-	data.Form = roleCreateForm{
-		DriveID: id,
+		Form:  roleCreateForm{DriveID: id},
+		Flash: flash,
 	}
 
 	app.render(w, http.StatusOK, "drive.html", data)
@@ -125,6 +125,8 @@ func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) 
 		app.serverError(w, err)
 		return
 	}
+
+	app.sessionManager.Put(r.Context(), "flash", "Drive Created Successfully")
 
 	http.Redirect(w, r, fmt.Sprintf("/drive/%d", id), http.StatusSeeOther)
 }
