@@ -66,22 +66,13 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	roles, err := app.roles.All(id)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	flash := app.sessionManager.PopString(r.Context(), "flash")
-
 	data := &templateData{
-		Drive: drive,
-		Roles: roles,
-		Form:  roleCreateForm{DriveID: id},
-		Flash: flash,
+		Drive:   drive,
+		DriveID: id,
+		Form:    roleCreateForm{},
 	}
 
-	app.render(w, http.StatusOK, "drive.html", data)
+	app.renderDrive(w, r, data)
 }
 
 func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
@@ -177,13 +168,14 @@ func (app *application) roleAddPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-		data := &templateData{
-			Form:  form,
-			Drive: drive,
-			Roles: roles,
-		}
+	drive, err := app.drives.Get(id)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
 
-		app.render(w, http.StatusUnprocessableEntity, "drive.html", data)
+	if drive.Published {
+		app.clientError(w, http.StatusForbidden)
 		return
 	}
 
@@ -205,5 +197,12 @@ func (app *application) roleAddPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("/drive/%d", id), http.StatusSeeOther)
+	data := &templateData{
+		Drive:   drive,
+		DriveID: id,
+		Form:    roleCreateForm{},
+	}
+
+	w.Header().Set("HX-Refresh", "true")
+	app.renderDrive(w, r, data)
 }
