@@ -131,7 +131,7 @@ func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) 
 	http.Redirect(w, r, fmt.Sprintf("/drive/%d", id), http.StatusSeeOther)
 }
 
-func (app *application) driveViewPost(w http.ResponseWriter, r *http.Request) {
+func (app *application) roleAddPost(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
 
 	id, err := strconv.Atoi(params.ByName("id"))

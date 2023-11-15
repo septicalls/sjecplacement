@@ -21,7 +21,7 @@ func (app *application) routes() http.Handler {
 
 	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
 	router.Handler(http.MethodGet, "/drive/:id", dynamic.ThenFunc(app.driveView))
-	router.Handler(http.MethodPost, "/drive/:id", dynamic.ThenFunc(app.driveViewPost))
+	router.Handler(http.MethodPost, "/drive/:id", dynamic.ThenFunc(app.roleAddPost))
 	router.Handler(http.MethodGet, "/create", dynamic.ThenFunc(app.driveCreate))
 	router.Handler(http.MethodPost, "/create", dynamic.ThenFunc(app.driveCreatePost))
 
