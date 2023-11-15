@@ -168,18 +168,14 @@ func (app *application) roleAddPost(w http.ResponseWriter, r *http.Request) {
 	form.CheckField(srvAgrOk, "serviceagreement", "Must be a valid floating point")
 
 	if !form.Valid() {
-		// Will be replaced with drive cache
-		drive, err := app.drives.Get(id)
-		if err != nil {
-			app.serverError(w, err)
-			return
+		data := templateData{
+			DriveID: id,
+			Form:    form,
 		}
 
-		roles, err := app.roles.All(id)
-		if err != nil {
-			app.serverError(w, err)
-			return
-		}
+		app.templateCache["role.htmx"].Execute(w, data)
+		return
+	}
 
 		data := &templateData{
 			Form:  form,
