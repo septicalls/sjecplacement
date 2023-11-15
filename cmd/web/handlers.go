@@ -197,12 +197,5 @@ func (app *application) roleAddPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := &templateData{
-		Drive:   drive,
-		DriveID: id,
-		Form:    roleCreateForm{},
-	}
-
 	w.Header().Set("HX-Refresh", "true")
-	app.renderDrive(w, r, data)
 }
