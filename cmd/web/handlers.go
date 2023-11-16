@@ -72,7 +72,18 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		Form:    roleCreateForm{},
 	}
 
-	app.renderDrive(w, r, data)
+	roles, err := app.roles.All(data.DriveID)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	flash := app.sessionManager.PopString(r.Context(), "flash")
+
+	data.Roles = roles
+	data.Flash = flash
+
+	app.render(w, http.StatusOK, "drive.html", data)
 }
 
 func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
@@ -197,5 +208,11 @@ func (app *application) roleAddPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("HX-Refresh", "true")
+	data := templateData{
+		DriveID: id,
+		Role:    &role,
+		Form:    roleCreateForm{},
+	}
+
+	app.templateCache["role.htmx"].Execute(w, data)
 }

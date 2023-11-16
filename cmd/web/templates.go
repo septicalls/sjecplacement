@@ -11,11 +11,12 @@ import (
 
 type templateData struct {
 	Drive   *models.Drive
-	DriveID int
+	Role    *models.Role
 	Drives  []*models.Drive
+	Roles   []*models.Role
+	DriveID int
 	Flash   string
 	Form    any
-	Roles   []*models.Role
 }
 
 func humanDate(t time.Time) string {
@@ -79,6 +80,11 @@ func newTemplateCache() (map[string]*template.Template, error) {
 		// This is to render the raw html from the .htmx files while supporting the
 		// partial {{definition "for"}} templates.
 		ts, err := template.New(name).Funcs(functions).Parse(fmt.Sprintf(`{{template "%s" .}}`, name))
+		if err != nil {
+			return nil, err
+		}
+
+		ts, err = ts.ParseGlob("./ui/html/partials/*.html")
 		if err != nil {
 			return nil, err
 		}

@@ -1,4 +1,7 @@
-{{define "role.htmx"}}
+{{define "role.htmx" }}
+{{with .Role}}
+{{template "roleTable" .}}
+{{end}}
 <form id="roleform" hx-post="/drive/{{.DriveID}}" hx-target="#roleform" hx-swap="outerHTML">
     <div>
         <label class="required" for="profile">Profile:</label>
