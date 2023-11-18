@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"path/filepath"
 	"text/template"
 	"time"
@@ -10,13 +9,14 @@ import (
 )
 
 type templateData struct {
-	Drive   *models.Drive
-	Role    *models.Role
-	Drives  []*models.Drive
-	Roles   []*models.Role
-	DriveID int
-	Flash   string
-	Form    any
+	Drive        *models.Drive
+	Role         *models.Role
+	Drives       []*models.Drive
+	Roles        []*models.Role
+	DriveID      int
+	Flash        string
+	PublishError bool
+	Form         any
 }
 
 func humanDate(t time.Time) string {
@@ -53,43 +53,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 			return nil, err
 		}
 
-		// Some of the HTMX files are also used as partials in the main templates.
-		// This requires the htmx to be {{defined "like"}} this.
-		ts, err = ts.ParseGlob("./ui/htmx/*.htmx")
-		if err != nil {
-			return nil, err
-		}
-
 		ts, err = ts.ParseFiles(page)
-		if err != nil {
-			return nil, err
-		}
-
-		cache[name] = ts
-	}
-
-	// Load HTMX templates
-	htmxFiles, err := filepath.Glob("./ui/htmx/*.htmx")
-	if err != nil {
-		return nil, err
-	}
-
-	for _, htmxFile := range htmxFiles {
-		name := filepath.Base(htmxFile)
-
-		// This is to render the raw html from the .htmx files while supporting the
-		// partial {{definition "for"}} templates.
-		ts, err := template.New(name).Funcs(functions).Parse(fmt.Sprintf(`{{template "%s" .}}`, name))
-		if err != nil {
-			return nil, err
-		}
-
-		ts, err = ts.ParseGlob("./ui/html/partials/*.html")
-		if err != nil {
-			return nil, err
-		}
-
-		ts, err = ts.ParseFiles(htmxFile)
 		if err != nil {
 			return nil, err
 		}
