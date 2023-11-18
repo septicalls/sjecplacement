@@ -45,6 +45,21 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 	buf.WriteTo(w)
 }
 
+func (app *application) renderDrive(w http.ResponseWriter, r *http.Request, data *templateData) {
+	roles, err := app.roles.All(data.DriveID)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	flash := app.sessionManager.PopString(r.Context(), "flash")
+
+	data.Roles = roles
+	data.Flash = flash
+
+	app.render(w, http.StatusOK, "drive.html", data)
+}
+
 func (app *application) decodePostForm(r *http.Request, dst any) error {
 	err := r.ParseForm()
 	if err != nil {
