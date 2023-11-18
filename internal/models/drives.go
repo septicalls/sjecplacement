@@ -83,3 +83,27 @@ func (m *DriveModel) Latest() ([]*Drive, error) {
 
 	return drives, nil
 }
+
+func (m *DriveModel) CanEditDrive(id int) (*Drive, error) {
+	drive, err := m.Get(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if drive.Published {
+		return nil, ErrPublish
+	}
+
+	return drive, nil
+}
+
+func (m *DriveModel) Publish(id int) error {
+	stmt := `UPDATE drives SET published = true WHERE id = $1`
+
+	_, err := m.DB.Exec(stmt, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
