@@ -17,11 +17,14 @@ func (app *application) routes() http.Handler {
 		app.notFound(w)
 	})
 
-	router.HandlerFunc(http.MethodGet, "/", app.home)
-	router.HandlerFunc(http.MethodGet, "/drive/:id", app.driveView)
-	router.HandlerFunc(http.MethodPost, "/drive/:id", app.driveViewPost)
-	router.HandlerFunc(http.MethodGet, "/create", app.driveCreate)
-	router.HandlerFunc(http.MethodPost, "/create", app.driveCreatePost)
+	dynamic := alice.New(app.sessionManager.LoadAndSave)
+
+	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
+	router.Handler(http.MethodGet, "/drive/:id", dynamic.ThenFunc(app.driveView))
+	router.Handler(http.MethodPost, "/drive/:id", dynamic.ThenFunc(app.roleAddPost))
+	router.Handler(http.MethodGet, "/create", dynamic.ThenFunc(app.driveCreate))
+	router.Handler(http.MethodPost, "/create", dynamic.ThenFunc(app.driveCreatePost))
+	router.Handler(http.MethodPost, "/publish/:id", dynamic.ThenFunc(app.publishDrivePost))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 

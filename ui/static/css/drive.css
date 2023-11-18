@@ -55,10 +55,6 @@ table p {
     line-height: 50%;
 }
 
-table span {
-    color: #6b9080;
-}
-
 table, td {
     border: 4px solid #3A5A40;
     border-collapse: collapse;

@@ -1,5 +1,5 @@
 article {
-    width: 800px;
+    width: 1000px;
     margin: 2em 0;
     border: 4px solid #3A5A40;
     background-color: #e9f5db;
@@ -42,18 +42,12 @@ article hr {
     padding: 0.2em 1em;
 }
 
-.body h3::before {
-    content: "\2022";
-    margin-right: 0.2em;
-}
-
 .info {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    text-align: right;
+    margin: 0.5em 0;
 }
 
-.info p {
-    margin: 0.5em 0;
+p {
+    padding: 3em;
+    font-size: large;
 }

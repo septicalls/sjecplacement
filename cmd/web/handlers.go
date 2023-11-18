@@ -66,22 +66,13 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	roles, err := app.roles.All(id)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
 	data := &templateData{
-		Drive: drive,
-		Roles: roles,
-	}
-
-	data.Form = roleCreateForm{
+		Drive:   drive,
 		DriveID: id,
+		Form:    roleCreateForm{},
 	}
 
-	app.render(w, http.StatusOK, "drive.html", data)
+	app.renderDrive(w, r, data)
 }
 
 func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
@@ -126,10 +117,12 @@ func (app *application) driveCreatePost(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	app.sessionManager.Put(r.Context(), "flash", "Drive Created Successfully")
+
 	http.Redirect(w, r, fmt.Sprintf("/drive/%d", id), http.StatusSeeOther)
 }
 
-func (app *application) driveViewPost(w http.ResponseWriter, r *http.Request) {
+func (app *application) roleAddPost(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
 
 	id, err := strconv.Atoi(params.ByName("id"))
@@ -165,27 +158,27 @@ func (app *application) driveViewPost(w http.ResponseWriter, r *http.Request) {
 	srvAgr, srvAgrOk := validator.ValidFloat(form.ServiceAgreement)
 	form.CheckField(srvAgrOk, "serviceagreement", "Must be a valid floating point")
 
+	drive, err := app.drives.CanEditDrive(id)
+	if err != nil {
+		if errors.Is(err, models.ErrPublish) {
+			app.clientError(w, http.StatusForbidden)
+			return
+		} else if errors.Is(err, models.ErrNoRecord) {
+			app.clientError(w, http.StatusBadRequest)
+			return
+		}
+
+		app.serverError(w, err)
+	}
+
 	if !form.Valid() {
-		// Will be replaced with drive cache
-		drive, err := app.drives.Get(id)
-		if err != nil {
-			app.serverError(w, err)
-			return
-		}
-
-		roles, err := app.roles.All(id)
-		if err != nil {
-			app.serverError(w, err)
-			return
-		}
-
 		data := &templateData{
-			Form:  form,
-			Drive: drive,
-			Roles: roles,
+			Drive:   drive,
+			DriveID: id,
+			Form:    form,
 		}
 
-		app.render(w, http.StatusUnprocessableEntity, "drive.html", data)
+		app.renderDrive(w, r, data)
 		return
 	}
 
@@ -207,5 +200,48 @@ func (app *application) driveViewPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("/drive/%d", id), http.StatusSeeOther)
+	drive.Roles++
+
+	data := &templateData{
+		Drive:   drive,
+		DriveID: id,
+		Form:    roleCreateForm{},
+	}
+
+	app.sessionManager.Put(r.Context(), "flash", "Role Added Successfully")
+
+	app.renderDrive(w, r, data)
+}
+
+func (app *application) publishDrivePost(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil || id < 1 {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	_, err = app.drives.CanEditDrive(id)
+	if err != nil {
+		if errors.Is(err, models.ErrPublish) {
+			app.clientError(w, http.StatusForbidden)
+			return
+		} else if errors.Is(err, models.ErrNoRecord) {
+			app.clientError(w, http.StatusBadRequest)
+			return
+		}
+
+		app.serverError(w, err)
+	}
+
+	err = app.drives.Publish(id)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.sessionManager.Put(r.Context(), "flash", "Drive Published Successfully")
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

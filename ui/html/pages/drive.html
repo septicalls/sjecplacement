@@ -22,10 +22,11 @@
 
 {{if .Roles}}
 {{range .Roles}}
+
 <table>
     <tr>
         <td colspan="2">
-            <h2><span>#{{.ID}}</span> {{.Profile}}</h2>
+            <h2>{{.Profile}}</h2>
         </td>
     </tr>
     <tr>
@@ -68,10 +69,23 @@
     </tr>
     {{end}}
 </table>
+
 {{end}}
 {{end}}
-<p>Fields with an '*' are required.</p>
-<form action="/drive/{{.Drive.ID}}" method="post">
+
+{{if not .Drive.Published}}
+{{if gt .Drive.Roles 0}}
+<form action="/publish/{{.DriveID}}" method="post">
+    <input type="submit" value="Publish Drive">
+    {{with .PublishError}}
+    <label class="error">{{.}}</label>
+    {{end}}
+</form>
+{{else}}
+<p>Add at least one role to publish the drive.</p>
+{{end}}
+
+<form action="/drive/{{.DriveID}}" method="post">
     <div>
         <label class="required" for="profile">Profile:</label>
         <input type="text" name="profile" value="{{.Form.Profile}}" {{with .Form.FieldErrors.profile}} class="error">
@@ -130,5 +144,6 @@
         <input type="submit" value="Add Role">
     </div>
 </form>
+{{end}}
 
 {{end}}
