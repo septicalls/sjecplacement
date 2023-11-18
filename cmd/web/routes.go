@@ -24,6 +24,7 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodPost, "/drive/:id", dynamic.ThenFunc(app.roleAddPost))
 	router.Handler(http.MethodGet, "/create", dynamic.ThenFunc(app.driveCreate))
 	router.Handler(http.MethodPost, "/create", dynamic.ThenFunc(app.driveCreatePost))
+	router.Handler(http.MethodPost, "/publish/:id", dynamic.ThenFunc(app.publishDrivePost))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 
