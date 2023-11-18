@@ -46,3 +46,8 @@ article hr {
     text-align: right;
     margin: 0.5em 0;
 }
+
+p {
+    padding: 3em;
+    font-size: large;
+}
