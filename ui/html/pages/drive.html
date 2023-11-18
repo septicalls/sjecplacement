@@ -5,9 +5,6 @@
 {{end}}
 
 {{define "main"}}
-{{with .Flash}}
-<div class='flash'>{{.}}</div>
-{{end}}
 {{with .Drive}}
 <article>
     <div class="heading">
@@ -25,8 +22,128 @@
 
 {{if .Roles}}
 {{range .Roles}}
-{{template "roleTable" .}}
+
+<table>
+    <tr>
+        <td colspan="2">
+            <h2>{{.Profile}}</h2>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            {{.Description}}
+        </td>
+    </tr>
+    <tr>
+        <td>Qualification</td>
+        <td>{{.Qualification}}</td>
+    </tr>
+    {{if .Cutoff.Valid}}
+    <tr>
+        <td>Cut-off</td>
+        <td>{{.Cutoff.String}}</td>
+    </tr>
+    {{end}}
+    {{if .Location.Valid}}
+    <tr>
+        <td>Location</td>
+        <td>{{.Location.String}}</td>
+    </tr>
+    {{end}}
+    {{if .Stipend.Valid}}
+    <tr>
+        <td>Internship Stipend</td>
+        <td>Rs. {{.Stipend.Int32}} per month</td>
+    </tr>
+    {{end}}
+    {{if .CTC.Valid}}
+    <tr>
+        <td>Cost-To-Company</td>
+        <td>{{.CTC.Float64}} LPA</td>
+    </tr>
+    {{end}}
+    {{if .ServiceAgreement.Valid}}
+    <tr>
+        <td>Service Agreement</td>
+        <td>{{.ServiceAgreement.Float64}} years</td>
+    </tr>
+    {{end}}
+</table>
+
 {{end}}
 {{end}}
-{{template "role.htmx" .}}
+
+{{if not .Drive.Published}}
+{{if gt .Drive.Roles 0}}
+<form action="/publish/{{.DriveID}}" method="post">
+    <input type="submit" value="Publish Drive">
+    {{with .PublishError}}
+    <label class="error">{{.}}</label>
+    {{end}}
+</form>
+{{else}}
+<p>Add at least one role to publish the drive.</p>
+{{end}}
+
+<form action="/drive/{{.DriveID}}" method="post">
+    <div>
+        <label class="required" for="profile">Profile:</label>
+        <input type="text" name="profile" value="{{.Form.Profile}}" {{with .Form.FieldErrors.profile}} class="error">
+        <label class="error">{{.}}</label {{end}}>
+        <p>Data Scientist, Business Analyst, etc.</p>
+    </div>
+    <div>
+        <label class="required" for="description">Description:</label>
+        <textarea name="description" rows="8" {{with .Form.FieldErrors.description}} class="error"
+            {{end}}>{{.Form.Description}}</textarea>
+        {{with .Form.FieldErrors.description}}
+        <label class="error">{{.}}</label>
+        {{end}}
+    </div>
+    <div>
+        <label class="required" for="qualification">Qualification:</label>
+        <input type="text" name="qualification" value="{{.Form.Qualification}}" {{with .Form.FieldErrors.qualification}}
+            class="error">
+        <label class="error">{{.}}</label {{end}}>
+        <p>"BE in CSE/ECE only", "Mechanical Engineer", etc.</p>
+    </div>
+    <div>
+        <label for="cutoff">Cut-off:</label>
+        <input type="text" name="cutoff" value="{{.Form.Cutoff}}" {{with .Form.FieldErrors.cutoff}} class="error">
+        <label class="error">{{.}}</label {{end}}>
+        <p>"7.5 CGPA and above", "No backlogs", etc.</p>
+    </div>
+    <div>
+        <label for="location">Location:</label>
+        <input type="text" name="location" value="{{.Form.Location}}" {{with .Form.FieldErrors.location}} class="error">
+        <label class="error">{{.}}</label {{end}}>
+        <p>Mangalore, Kochi, etc.</p>
+    </div>
+    <div>
+        <label for="stipend">Internship Stipend:</label>
+        <input type="text" name="stipend" placeholder="Rs. Per Month" value="{{.Form.Stipend}}" {{with
+            .Form.FieldErrors.stipend}} class="error">
+        <label class="error">{{.}}</label {{end}}>
+        <p>"32,000", 15000, 12750, etc.</p>
+    </div>
+    <div>
+        <label for="ctc">Cost-To-Company:</label>
+        <input type="text" name="ctc" placeholder="In LPA" value="{{.Form.CTC}}" {{with .Form.FieldErrors.ctc}}
+            class="error">
+        <label class="error">{{.}}</label {{end}}>
+        <p>5.5, 4.8, 3, etc.</p>
+    </div>
+    <div>
+        <label for="serviceagreement">Service Agreement:</label>
+        <input type="text" name="serviceagreement" placeholder="In Years" value="{{.Form.ServiceAgreement}}" {{with
+            .Form.FieldErrors.serviceagreement}} class="error">
+        <label class="error">{{.}}</label {{end}}>
+        <p>1.5, 2, 0.5, etc.</p>
+    </div>
+    <div>
+        <input type="submit" value="Add Role">
+    </div>
+</form>
+{{end}}
+
 {{end}}

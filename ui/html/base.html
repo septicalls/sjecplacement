@@ -18,6 +18,9 @@
         {{template "nav" .}}
     </header>
     <div class="container">
+        {{with .Flash}}
+        <div class='flash'>{{.}}</div>
+        {{end}}
         <main>
             {{template "main" .}}
         </main>

@@ -73,6 +73,17 @@ header ul li a:hover {
     transition-duration: 200ms;
 }
 
+.flash {
+    width: 1000px;
+    color: #FFFFFF;
+    font-weight: bold;
+    border-radius: 3px;
+    background-color: #34495E;
+    margin-top: 2em;
+    padding: 1em;
+    text-align: center;
+}
+
 .container {
     flex: 1;
     display: flex;
