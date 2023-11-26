@@ -18,7 +18,7 @@ func (app *application) routes() http.Handler {
 	})
 
 	// Unprotected routes
-	dynamic := alice.New(app.sessionManager.LoadAndSave)
+	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf)
 
 	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
 	router.Handler(http.MethodGet, "/drive/:id", dynamic.ThenFunc(app.driveView))

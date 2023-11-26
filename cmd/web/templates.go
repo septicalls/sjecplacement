@@ -18,6 +18,7 @@ type templateData struct {
 	PublishError    bool
 	IsAuthenticated bool
 	Form            any
+	CSRFToken       string
 }
 
 func humanDate(t time.Time) string {
