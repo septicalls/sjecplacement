@@ -33,12 +33,7 @@ article hr {
 }
 
 .body {
-    padding: 0.5em 1em;
-}
-
-.body h3::before {
-    content: "\2022";
-    margin-right: 0.2em;
+    padding: 0em 1em;
 }
 
 table {

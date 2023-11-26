@@ -11,6 +11,7 @@ import (
 	"text/template"
 	"time"
 
+	"sjecplacement.in/internal/cli"
 	"sjecplacement.in/internal/models"
 
 	"github.com/alexedwards/scs/postgresstore"
@@ -30,6 +31,7 @@ type application struct {
 	infoLog        *log.Logger
 	drives         *models.DriveModel
 	roles          *models.RoleModel
+	users          *models.UserModel
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
@@ -43,6 +45,7 @@ func main() {
 
 	flag.StringVar(&cfg.addr, "addr", ":8080", "HTTP network address")
 	flag.StringVar(&cfg.staticDir, "static-dir", "./ui/static", "Path to static assets")
+	userShell := flag.Bool("shell", false, "Run user shell to add and manage users")
 
 	flag.Parse()
 
@@ -63,6 +66,11 @@ func main() {
 
 	defer db.Close()
 
+	if *userShell {
+		cli.UserShell(&models.UserModel{DB: db})
+		return
+	}
+
 	templateCache, err := newTemplateCache()
 	if err != nil {
 		errorLog.Fatal(err)
@@ -81,6 +89,7 @@ func main() {
 		infoLog:        infoLog,
 		drives:         &models.DriveModel{DB: db},
 		roles:          &models.RoleModel{DB: db},
+		users:          &models.UserModel{DB: db},
 		templateCache:  templateCache,
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,

@@ -13,9 +13,8 @@
     </div>
     <hr>
     <div class="body">
-        <h3>{{.Company}}</h3>
-        <p>{{.Description}}</p>
-        <p>Roles {{.Roles}}</p>
+        <pre>{{.Description}}</pre>
+        <h3>Roles offered by {{.Company}}: {{.Roles}}</h3>
     </div>
 </article>
 {{end}}
@@ -86,6 +85,7 @@
 {{end}}
 
 <form action="/drive/{{.DriveID}}" method="post">
+    <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
     <div>
         <label class="required" for="profile">Profile:</label>
         <input type="text" name="profile" value="{{.Form.Profile}}" {{with .Form.FieldErrors.profile}} class="error">

@@ -1,9 +1,21 @@
 {{define "nav"}}
 <nav>
     <ul>
+        {{if .IsAuthenticated}}
         <li>
             <a href="/create">Create</a>
         </li>
+        <li>
+            <form action='/user/logout' method='POST'>
+                <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+                <button>Logout</button>
+            </form>
+        </li>
+        {{else}}
+        <li>
+            <a href='/user/login'>Login</a>
+        </li>
+        {{end}}
     </ul>
 </nav>
 {{end}}

@@ -33,6 +33,12 @@ type roleCreateForm struct {
 	validator.Validator `form:"-"`
 }
 
+type userLoginForm struct {
+	Email               string `form:"email"`
+	Password            string `form:"password"`
+	validator.Validator `form:"-"`
+}
+
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	drives, err := app.drives.Latest()
 	if err != nil {
@@ -40,9 +46,8 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := &templateData{
-		Drives: drives,
-	}
+	data := app.newTemplateData(r)
+	data.Drives = drives
 
 	app.render(w, http.StatusOK, "home.html", data)
 }
@@ -66,17 +71,16 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := &templateData{
-		Drive:   drive,
-		DriveID: id,
-		Form:    roleCreateForm{},
-	}
+	data := app.newTemplateData(r)
+	data.Drive = drive
+	data.DriveID = id
+	data.Form = roleCreateForm{}
 
 	app.renderDrive(w, r, data)
 }
 
 func (app *application) driveCreate(w http.ResponseWriter, r *http.Request) {
-	data := templateData{}
+	data := app.newTemplateData(r)
 
 	data.Form = driveCreateForm{
 		Date: time.Now().Format("2006-01-02"),
@@ -172,11 +176,10 @@ func (app *application) roleAddPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !form.Valid() {
-		data := &templateData{
-			Drive:   drive,
-			DriveID: id,
-			Form:    form,
-		}
+		data := app.newTemplateData(r)
+		data.Drive = drive
+		data.DriveID = id
+		data.Form = form
 
 		app.renderDrive(w, r, data)
 		return
@@ -202,11 +205,10 @@ func (app *application) roleAddPost(w http.ResponseWriter, r *http.Request) {
 
 	drive.Roles++
 
-	data := &templateData{
-		Drive:   drive,
-		DriveID: id,
-		Form:    roleCreateForm{},
-	}
+	data := app.newTemplateData(r)
+	data.Drive = drive
+	data.DriveID = id
+	data.Form = roleCreateForm{}
 
 	app.sessionManager.Put(r.Context(), "flash", "Role Added Successfully")
 
@@ -243,5 +245,66 @@ func (app *application) publishDrivePost(w http.ResponseWriter, r *http.Request)
 
 	app.sessionManager.Put(r.Context(), "flash", "Drive Published Successfully")
 
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (app *application) userLogin(w http.ResponseWriter, r *http.Request) {
+	data := app.newTemplateData(r)
+	data.Form = userLoginForm{}
+	app.render(w, http.StatusOK, "login.html", data)
+}
+
+func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
+	var form userLoginForm
+
+	err := app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	form.CheckField(validator.NotBlank(form.Email), "email", "This field cannot be blank")
+	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "This field must be a valid email address")
+	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
+
+	if !form.Valid() {
+		data := app.newTemplateData(r)
+		data.Form = form
+		app.render(w, http.StatusUnprocessableEntity, "login.html", data)
+		return
+	}
+
+	id, err := app.users.Authenticate(form.Email, form.Password)
+	if err != nil {
+		if errors.Is(err, models.ErrInvalidCredentials) {
+			form.AddNonFieldError("Email or password is incorrect")
+			data := app.newTemplateData(r)
+			data.Form = form
+			app.render(w, http.StatusUnprocessableEntity, "login.html", data)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	err = app.sessionManager.RenewToken(r.Context())
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.sessionManager.Put(r.Context(), "authenticatedUserID", id)
+	http.Redirect(w, r, "/create", http.StatusSeeOther)
+}
+
+func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {
+	err := app.sessionManager.RenewToken(r.Context())
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.sessionManager.Remove(r.Context(), "authenticatedUserID")
+	app.sessionManager.Put(r.Context(), "flash", "You've been successfully logged out")
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
