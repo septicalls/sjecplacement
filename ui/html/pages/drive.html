@@ -85,6 +85,7 @@
 {{end}}
 
 <form action="/drive/{{.DriveID}}" method="post">
+    <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
     <div>
         <label class="required" for="profile">Profile:</label>
         <input type="text" name="profile" value="{{.Form.Profile}}" {{with .Form.FieldErrors.profile}} class="error">
