@@ -30,6 +30,7 @@ type application struct {
 	infoLog        *log.Logger
 	drives         *models.DriveModel
 	roles          *models.RoleModel
+	users          *models.UserModel
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
@@ -81,6 +82,7 @@ func main() {
 		infoLog:        infoLog,
 		drives:         &models.DriveModel{DB: db},
 		roles:          &models.RoleModel{DB: db},
+		users:          &models.UserModel{DB: db},
 		templateCache:  templateCache,
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,
