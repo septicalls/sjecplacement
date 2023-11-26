@@ -2,11 +2,14 @@ package validator
 
 import (
 	"database/sql"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
 )
+
+var EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 type Validator struct {
 	FieldErrors map[string]string
@@ -40,6 +43,10 @@ func MaxChar(value string, n int) bool {
 	return utf8.RuneCountInString(value) <= n
 }
 
+func MinChar(value string, n int) bool {
+	return utf8.RuneCountInString(value) >= n
+}
+
 func ValidDate(date string) (time.Time, bool) {
 	parsedDate, err := time.Parse("2006-01-02", date)
 	if err != nil || !parsedDate.After(time.Now()) {
@@ -47,6 +54,10 @@ func ValidDate(date string) (time.Time, bool) {
 	}
 
 	return parsedDate, true
+}
+
+func Matches(value string, rx *regexp.Regexp) bool {
+	return rx.MatchString(value)
 }
 
 func ValidInt(integer string) (sql.NullInt32, bool) {

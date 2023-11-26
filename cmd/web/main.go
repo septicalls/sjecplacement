@@ -11,6 +11,7 @@ import (
 	"text/template"
 	"time"
 
+	"sjecplacement.in/internal/cli"
 	"sjecplacement.in/internal/models"
 
 	"github.com/alexedwards/scs/postgresstore"
@@ -44,6 +45,7 @@ func main() {
 
 	flag.StringVar(&cfg.addr, "addr", ":8080", "HTTP network address")
 	flag.StringVar(&cfg.staticDir, "static-dir", "./ui/static", "Path to static assets")
+	userShell := flag.Bool("shell", false, "Run user shell to add and manage users")
 
 	flag.Parse()
 
@@ -63,6 +65,11 @@ func main() {
 	}
 
 	defer db.Close()
+
+	if *userShell {
+		cli.UserShell(&models.UserModel{DB: db})
+		return
+	}
 
 	templateCache, err := newTemplateCache()
 	if err != nil {
