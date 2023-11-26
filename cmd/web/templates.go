@@ -9,14 +9,15 @@ import (
 )
 
 type templateData struct {
-	Drive        *models.Drive
-	Role         *models.Role
-	Drives       []*models.Drive
-	Roles        []*models.Role
-	DriveID      int
-	Flash        string
-	PublishError bool
-	Form         any
+	Drive           *models.Drive
+	Role            *models.Role
+	Drives          []*models.Drive
+	Roles           []*models.Role
+	DriveID         int
+	Flash           string
+	PublishError    bool
+	IsAuthenticated bool
+	Form            any
 }
 
 func humanDate(t time.Time) string {
