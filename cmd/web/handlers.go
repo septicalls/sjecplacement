@@ -71,6 +71,11 @@ func (app *application) driveView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !drive.Published && !app.isAuthenticated(r) {
+		app.notFound(w)
+		return
+	}
+
 	data := app.newTemplateData(r)
 	data.Drive = drive
 	data.DriveID = id
