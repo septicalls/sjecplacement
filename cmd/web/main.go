@@ -3,27 +3,25 @@ package main
 import (
 	"database/sql"
 	"encoding/gob"
-	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"text/template"
 	"time"
 
-	"sjecplacement.in/internal/cli"
 	"sjecplacement.in/internal/models"
 
 	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 type config struct {
+	dsn       string
 	addr      string
 	staticDir string
-	dsn       string
 }
 
 type application struct {
@@ -38,26 +36,18 @@ type application struct {
 }
 
 func main() {
-	var cfg config
-
-	dsn := "postgres://default:%s@ep-super-pond-22168364-pooler.ap-southeast-1.postgres.vercel-storage.com:5432/verceldb"
-	pass := flag.String("pass", "[REDACTED]", "Password for the PostgreSQL Database")
-
-	flag.StringVar(&cfg.addr, "addr", ":8080", "HTTP network address")
-	flag.StringVar(&cfg.staticDir, "static-dir", "./ui/static", "Path to static assets")
-	userShell := flag.Bool("shell", false, "Run user shell to add and manage users")
-
-	flag.Parse()
-
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 
-	if *pass == "[REDACTED]" {
-		flag.Usage()
-		errorLog.Fatal("Please provide a password for the DB")
+	if err := godotenv.Load(); err != nil {
+		errorLog.Fatal("Error loading .env file")
 	}
 
-	cfg.dsn = fmt.Sprintf(dsn, *pass)
+	cfg := config{
+		dsn:       os.Getenv("POSTGRES_URL"),
+		addr:      os.Getenv("APPLICATION_PORT"),
+		staticDir: "./ui/static",
+	}
 
 	db, err := openDB(cfg.dsn)
 	if err != nil {
@@ -65,11 +55,6 @@ func main() {
 	}
 
 	defer db.Close()
-
-	if *userShell {
-		cli.UserShell(&models.UserModel{DB: db})
-		return
-	}
 
 	templateCache, err := newTemplateCache()
 	if err != nil {
