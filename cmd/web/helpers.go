@@ -53,10 +53,7 @@ func (app *application) renderDrive(w http.ResponseWriter, r *http.Request, data
 		return
 	}
 
-	flash := app.sessionManager.PopString(r.Context(), "flash")
-
 	data.Roles = roles
-	data.Flash = flash
 
 	app.render(w, http.StatusOK, "drive.html", data)
 }
