@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"encoding/gob"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -19,8 +21,11 @@ import (
 )
 
 type config struct {
-	dsn       string
-	addr      string
+	addr string
+	env  string
+	db   struct {
+		dsn string
+	}
 	staticDir string
 }
 
@@ -44,17 +49,22 @@ func main() {
 	}
 
 	cfg := config{
-		dsn:       os.Getenv("POSTGRES_URL"),
 		addr:      os.Getenv("APPLICATION_PORT"),
 		staticDir: "./ui/static",
 	}
 
-	db, err := openDB(cfg.dsn)
+	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
+
+	cfg.db.dsn = os.Getenv("POSTGRES_URL")
+
+	db, err := openDB(cfg)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
 
 	defer db.Close()
+
+	infoLog.Printf("database connection pool established")
 
 	templateCache, err := newTemplateCache()
 	if err != nil {
@@ -86,18 +96,21 @@ func main() {
 		Handler:  app.routes(),
 	}
 
-	app.infoLog.Printf("Starting server on %s", cfg.addr)
+	app.infoLog.Printf("starting %s server on %s", cfg.env, cfg.addr)
 	err = srv.ListenAndServe()
 	log.Fatal(err)
 }
 
-func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", dsn)
+func openDB(cfg config) (*sql.DB, error) {
+	db, err := sql.Open("postgres", cfg.db.dsn)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = db.Ping(); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err = db.PingContext(ctx); err != nil {
 		return nil, err
 	}
 
