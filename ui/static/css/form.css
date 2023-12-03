@@ -30,7 +30,7 @@ label.error {
     font-weight: bold;
 }
 
-form input[type="text"], form input[type="number"], textarea {
+form input:not([type="date"]), textarea {
     width: 100%;
     padding: 0.75em;
     margin: 0.5em 0;

@@ -63,6 +63,7 @@ header ul li {
 }
 
 header ul li a {
+    font-size: medium;
     padding: 0.5em 0.8em;
     margin-left: 0.3em;
     border-radius: 1em;
@@ -71,6 +72,20 @@ header ul li a {
 header ul li a:hover {
     background-color: #52796f;
     transition-duration: 200ms;
+}
+
+header form {
+    all: initial;
+    width: auto;
+}
+
+header form button {
+    color: #6b9080;
+    cursor: pointer;
+    border: 0;
+    padding: 0.5em 0.8em;
+    margin-left: 0.3em;
+    border-radius: 1em;
 }
 
 .flash {

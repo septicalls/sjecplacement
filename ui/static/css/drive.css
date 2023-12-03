@@ -36,6 +36,10 @@ article hr {
     padding: 0em 1em;
 }
 
+.body p {
+    white-space: pre-wrap;
+}
+
 table {
     background-color: #e9f5db;
     margin-bottom: 2em;
